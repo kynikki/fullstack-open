@@ -30,7 +30,8 @@ const App = () => {
     if (Math.max(...votes) != 0) {
       return (
         <>
-          {anecdotes[indexOfMax]}
+          <p>{anecdotes[indexOfMax]}</p>
+          <p>has {votes[indexOfMax]} votes</p>
         </>            
       )
     }
@@ -44,8 +45,7 @@ const App = () => {
       <button onClick={giveVote}>vote</button>
       <button onClick={() => setSelected(Math.floor(Math.random() * (anecdotes.length)))}>next anecdote</button>  
       <h2>Anecdote with most votes</h2>
-      <p>{showMostVoted()}</p>
-      <p>has {votes[indexOfMax]} votes</p>
+      {showMostVoted()}      
     </div>
   )
 }
