@@ -44,23 +44,7 @@ const App = () => {
           id: 2
         }
       ]
-    },
-    {
-      name: 'Koira',
-      id: 3,
-      parts: [
-        {
-          name: 'Luu',
-          exercises: 3,
-          id: 1
-        },
-        {
-          name: 'Pallo',
-          exercises: 7,
-          id: 2
-        }
-      ]
-    }
+    }    
   ]  
 
 
