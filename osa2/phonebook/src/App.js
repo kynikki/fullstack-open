@@ -6,8 +6,7 @@ const Person = (props) => {
   )
 }
 
-const Persons = (props) => {
-  
+const Persons = (props) => {  
   return (
     <ul>
             {props.persons.filter(person => person.name.toUpperCase().includes(props.newFilter.toUpperCase())).map(person => (
