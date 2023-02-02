@@ -1,72 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
 
-const Person = (props) => {     
-  return (
-      <li>{props.name} {props.number}</li>
-  )
-}
-
-const Persons = (props) => {  
-  return (
-    <ul>
-            {props.persons.filter(person => person.name.toUpperCase().includes(props.newFilter.toUpperCase())).map(person => (
-            <Person key={person.name} name={person.name} number={person.number} /> ))}
-        </ul>  
-  )
-}
-
-const Filter = (props) => {
-  return (
-    <div>
-          filter shown with:
-          <input 
-            value={props.newFilter}
-            onChange={props.handleFilterChange}/>
-    </div>
-  )
-}
-
-const PersonForm = (props) => {
-  return (
-    <form onSubmit={props.addPerson}>
-      <div>
-        name: 
-        <input 
-        value={props.newName}
-        onChange={props.handlePersonChange}/>
-      </div>
-      <div>
-        number: 
-        <input
-        value={props.newNumber}
-        onChange={props.handleNumberChange}/>
-      </div>        
-        <button type="submit">add</button>
-    </form>
-  )
-}
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-      number: '050-5587524'
-    },
-    {
-      name: 'Atte Marttinen',
-      number: '0500585281'
-    },
-    {
-      name: 'Heikki Silvennoinen',
-      number: '1235675454'
-    }
-  ]) 
-  
+  const [persons, setPersons] = useState([])     
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  
 
-
+  const hook = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }
+  useEffect(hook, [])
 
   const addPerson = (event) => {
     event.preventDefault()
