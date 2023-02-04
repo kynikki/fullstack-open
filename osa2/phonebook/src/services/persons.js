@@ -7,9 +7,15 @@ const getPersons = () => {
     return request.then(response => response.data)
 }
 
-const create = personObject => {
+const create = (personObject) => {
     const request = axios.post(baseUrl, personObject)
     return request.then(response => response.data)
 }
 
-export default { getPersons, create }
+const remove = (person) => {    
+    const request = axios.delete(`${baseUrl}/${person.id}`)
+    console.log('henkilö poistettiin')
+    return request.then(response => response.data)   
+}
+
+export default { getPersons, create, remove }

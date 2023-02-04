@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
@@ -56,8 +55,24 @@ const App = () => {
   const handleFilterChange = (event) => {
     console.log(event.target.value)
     setNewFilter(event.target.value)    
+  }  
+  const handleDeletePerson = (name, id) => {
+    return () => {
+      if (window.confirm(`Poistetaanko ${name} ?`)) {
+        personService
+          .remove(id)
+          .then(() => {
+            setPersons(persons.filter(n => n.id !== id));            
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch(error => {
+            setPersons(persons.filter(n => n.name !== name));            
+          }
+        )        
+      }
+    }
   }
-
 
   return (
     <div>
@@ -69,10 +84,10 @@ const App = () => {
         newName={newName}
         handlePersonChange={handlePersonChange}
         newNumber={newNumber}
-        handleNumberChange={handleNumberChange}
+        handleNumberChange={handleNumberChange}        
       />       
       <h2>Numbers</h2>
-      <Persons persons={persons} newFilter={newFilter} />     
+      <Persons persons={persons} newFilter={newFilter} handleDeletePerson={handleDeletePerson} />     
     </div>
   )
 
