@@ -1,6 +1,6 @@
 import React from "react"
 
-const Person = (props, remove) => {      
+const Person = (props) => {      
     
     return (
         <li>
