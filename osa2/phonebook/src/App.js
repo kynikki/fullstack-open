@@ -29,6 +29,7 @@ const App = () => {
     }
 
     const found = (persons.find(person => person.name === personObject.name))
+    // If person doesn't exist in phonebook yet, person will be added.
     if (found === undefined) {
        
       personService
@@ -36,24 +37,31 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
+          setNewNumber('')
         })
 
     }
     else {
-      window.alert(`${personObject.name} is already added to phonebook`)
+      // Person is already added to phonebook. Ask for confirmation if the user wants to update the number.
+      if (window.confirm(`${personObject.name} is already added to phonebook, replace the old
+      number with a new one?`)) {
+        const changedPerson = { ...found, number: newNumber}        
+        personService
+          .update(found.id, changedPerson)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== found.id ? person : response.data))
+          })
+      }
     }    
   } 
 
   const handlePersonChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
-  const handleNumberChange = (event) => {
-    console.log(event.target.value)
+  const handleNumberChange = (event) => {    
     setNewNumber(event.target.value)
   }
   const handleFilterChange = (event) => {
-    console.log(event.target.value)
     setNewFilter(event.target.value)    
   }  
   const handleDeletePerson = (name, id) => {
