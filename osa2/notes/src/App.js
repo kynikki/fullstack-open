@@ -61,11 +61,15 @@ const App = () => {
     setNewNote(event.target.value)
   }
 
-  const handleNoteDelete = () => {
+  const handleNoteDelete = (note) => {
     return () => {
-      console.log('note deleted')
-      if (window.confirm(`Should sipuli be removed?`))
-      console.log('kissi')
+      if (window.confirm(`Should "${note.content}"  be deleted?`)){
+        noteService
+          .remove(note.id)
+          .then(() => {
+            setNotes(notes.filter(n => n.id !== note.id))            
+          })
+      }      
     }    
   }  
 

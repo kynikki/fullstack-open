@@ -3,13 +3,14 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import personService from './services/persons'
-
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])     
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
 
   const hook = () => {
     personService
@@ -39,6 +40,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        setNotification(`Added ${newName}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
 
     }
     else {
@@ -51,6 +56,10 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(person => person.id !== found.id ? person : response.data))
           })
+        setNotification(`Updated ${personObject.name}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
       }
     }    
   } 
@@ -66,18 +75,21 @@ const App = () => {
   }  
   const handleDeletePerson = (name, id) => {
     return () => {
-      if (window.confirm(`Poistetaanko ${name} ?`)) {
+      if (window.confirm(`Poistetaanko ${name}?`)) {
         personService
           .remove(id)
           .then(() => {
-            setPersons(persons.filter(n => n.id !== id));            
-            setNewName("");
-            setNewNumber("");
+            setPersons(persons.filter(n => n.id !== id))            
+            setNewName("")
+            setNewNumber("")
           })
           .catch(error => {
-            setPersons(persons.filter(n => n.name !== name));            
-          }
-        )        
+            setPersons(persons.filter(n => n.name !== name))            
+          })
+        setNotification(`Deleted ${name}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)                
       }
     }
   }
@@ -85,6 +97,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification}/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />      
       <h2>Add a new contact</h2>
       <PersonForm 
