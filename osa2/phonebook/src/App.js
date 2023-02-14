@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notification, setNotification] = useState(null)
+  const [notificationColor, setNotificationColor] = useState(null)
 
   const hook = () => {
     personService
@@ -56,10 +57,22 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(person => person.id !== found.id ? person : response.data))
           })
-        setNotification(`Updated ${personObject.name}`)
-        setTimeout(() => {
+          // Person has been already removed from server
+          .catch(error => {            
+            setNotificationColor("red")
+            setNotification(`Information of ${personObject.name} has already been removed from server`)
+            setNewName('')
+            setNewNumber('')
+
+            setPersons(persons.filter(person => person.id !== found.id))
+          })                     
+          setNotification(`Updated ${personObject.name}`)
+          setTimeout(() => {
           setNotification(null)
-        }, 5000)
+          }, 5000)
+          
+          setNewName('')
+          setNewNumber('')           
       }
     }    
   } 
@@ -85,7 +98,7 @@ const App = () => {
           })
           .catch(error => {
             setPersons(persons.filter(n => n.name !== name))            
-          })
+          })        
         setNotification(`Deleted ${name}`)
         setTimeout(() => {
           setNotification(null)
@@ -97,7 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification}/>
+      <Notification message={notification} color={notificationColor}/>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />      
       <h2>Add a new contact</h2>
       <PersonForm 
