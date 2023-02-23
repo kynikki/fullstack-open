@@ -3,6 +3,6 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "content": "REST client is good in testing backend",
+    "content": "jeejee",
     "important": true
 }
