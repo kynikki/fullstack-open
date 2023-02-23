@@ -19,6 +19,7 @@ app.use(cors())
 // Add json-parser to the code
 app.use(express.json())
 app.use(requestLogger)
+app.use(express.static('build'))
 
 let notes = [
     {
@@ -65,12 +66,11 @@ app.delete('api/notes/:id', (req, res) => {
 })
 
 const generateId = () => {
-    console.log('moro')
-    const maxId = notes.lenght > 0
-        ? Math.max(...notes.map(n => n.id))
-        : 0
+    const maxId = notes.length > 0
+      ? Math.max(...notes.map(n => n.id))
+      : 0
     return maxId + 1
-}
+  }
 
 app.post('/api/notes', (req, res) =>{
         
@@ -84,10 +84,10 @@ app.post('/api/notes', (req, res) =>{
     }
 
     const note = {
+        id: generateId(),
         content: body.content,
-        important: body.important || false,
-        id: generateId()
-    }
+        important: body.important || false,        
+    }   
 
     notes = notes.concat(note)    
     res.json(note)
