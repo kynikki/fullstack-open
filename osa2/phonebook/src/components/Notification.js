@@ -1,8 +1,8 @@
-const Notification = ({ message, color }) => {
+const Notification = ({ message, operationOK }) => {
     if (message === null) {
         return null
     }
-    if (color === "red") {
+    if (!operationOK) {
         return (
             <div className='redNotification'>
                 {message}

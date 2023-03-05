@@ -11,7 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notification, setNotification] = useState(null)
-  const [notificationColor, setNotificationColor] = useState(null)
+  const [operationOK, setOperationOK] = useState(null)  
 
   const hook = () => {
     personService
@@ -22,37 +22,51 @@ const App = () => {
   }
   useEffect(hook, [])
 
-  const addPerson = (event) => {
-    event.preventDefault()
+  const addPerson = (event) => {    
+    event.preventDefault() 
+    
+    setOperationOK(true)   
   
     const personObject = {
       name: newName,
       number: newNumber
     }
-
     const found = (persons.find(person => person.name === personObject.name))
     // If person doesn't exist in phonebook yet, person will be added.
     if (found === undefined) {
-       
+      
+      // Flag for checking if an error occurs
+      let errorFlag = false
+
       personService
         .create(personObject)
-        .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
+        .then(createdPerson => {
+          setPersons(persons.concat(createdPerson))
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {                     
+          errorFlag = true
+          setOperationOK(false)
+          setNotification(error.response.data.error)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)                         
+        })        
+        if (!errorFlag) {
         setNotification(`Added ${newName}`)
         setTimeout(() => {
           setNotification(null)
-        }, 5000)
-
+        }, 5000)        
+      }      
     }
     else {
       // Person is already added to phonebook. Ask for confirmation if the user wants to update the number.
       if (window.confirm(`${personObject.name} is already added to phonebook, replace the old
-      number with a new one?`)) {
-        const changedPerson = { ...found, number: newNumber}
-        console.log(found.id, changedPerson)        
+      number with a new one?`)) {        
+        
+        const changedPerson = { ...found, number: newNumber}                
+        
         personService
           .update(found.id, changedPerson)
           .then(response => {
@@ -60,13 +74,20 @@ const App = () => {
           })
           // Person has been already removed from server
           .catch(error => {            
-            setNotificationColor("red")
-            setNotification(`Information of ${personObject.name} has already been removed from server`)
+            setOperationOK(false)
+            setNotification(error.response.data.error)
             setNewName('')
             setNewNumber('')
 
             setPersons(persons.filter(person => person.id !== found.id))
-          })                     
+          })
+          
+          personService
+            .getPersons()
+            .then(persons => {
+            setPersons(persons)
+            })
+          
           setNotification(`Updated ${personObject.name}`)
           setTimeout(() => {
           setNotification(null)
@@ -111,7 +132,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} color={notificationColor}/>
+      <Notification message={notification} operationOK={operationOK} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />      
       <h2>Add a new contact</h2>
       <PersonForm 
