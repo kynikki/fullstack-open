@@ -51,11 +51,12 @@ const App = () => {
       // Person is already added to phonebook. Ask for confirmation if the user wants to update the number.
       if (window.confirm(`${personObject.name} is already added to phonebook, replace the old
       number with a new one?`)) {
-        const changedPerson = { ...found, number: newNumber}        
+        const changedPerson = { ...found, number: newNumber}
+        console.log(found.id, changedPerson)        
         personService
           .update(found.id, changedPerson)
           .then(response => {
-            setPersons(persons.map(person => person.id !== found.id ? person : response.data))
+            console.log('updating')
           })
           // Person has been already removed from server
           .catch(error => {            
