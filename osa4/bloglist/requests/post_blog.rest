@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+Content-Length: [length]
+
+{
+    "title": "Punainen Paloauto",
+    "author": "Jerry Cotton",
+    "url": "url2",
+    "likes": 57
+}
